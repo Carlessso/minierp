@@ -1,3 +1,26 @@
 spring:
   application:
     name: minierp
+
+  # Conexão com o banco. Os valores depois do ":" são o padrão local (docker-compose.yml);
+  # em outro ambiente, basta definir as variáveis DB_URL, DB_USERNAME e DB_PASSWORD.
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/minierp}
+    username: ${DB_USERNAME:minierp}
+    password: ${DB_PASSWORD:minierp}
+
+  jpa:
+    hibernate:
+      # Quem cria e altera tabelas é o Flyway. O Hibernate só confere se as entidades batem com o banco.
+      ddl-auto: validate
+    # Não deixa a sessão do banco aberta durante a renderização da resposta HTTP.
+    open-in-view: false
+
+  flyway:
+    locations: classpath:db/migration
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
